@@ -2,6 +2,18 @@
 
 This repository contains the Kubernetes configurations for deploying various components of the Elastic Stack (Elasticsearch, Kibana, and Filebeat) along with a basic Hello World application in a Kubernetes cluster. This setup is intended for development and testing purposes.
 
+## Environment
+
+This deployment is tested on an Amazon EKS (Elastic Kubernetes Service) cluster with the following characteristics:
+
+- **Cluster Configuration**: Single-node EKS cluster
+- **Kubernetes Version**: 1.28
+
+### Rationale
+
+- **Single-Node Setup**: The single-node configuration is chosen for testing purposes to minimize resource usage and simplify the setup. High availability is not a concern in this context.
+- **Kubernetes Version 1.28**: This version is selected because it is commonly used and supported by most of the latest services, ensuring compatibility and stability for the deployment.
+
 ## Repository Structure
 
 - **Elasticsearch**: Configuration for deploying a single-node Elasticsearch instance.
