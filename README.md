@@ -8,6 +8,7 @@ This repository contains the Kubernetes configurations for deploying various com
 - **Kibana**: Configuration for deploying Kibana.
 - **Filebeat**: Configuration for deploying Filebeat to collect logs and send them to Elasticsearch.
 - **Hello World Application**: A simple application to generate logs for testing the logging setup.
+- **Miscellaneous Configurations**: Additional configurations supporting the Elastic Stack and related applications.
 
 Each component is configured with simplicity in mind, suitable for development and testing environments.
 
@@ -66,7 +67,6 @@ A headless service is configured to enable communication between Elasticsearch n
 This configuration provides a straightforward Elasticsearch setup for development and testing. For production use, consider expanding to a multi-node cluster to take advantage of Elasticsearch's full capabilities in terms of high availability and fault tolerance.
 
 For detailed resource configurations, refer to the respective YAML files in the [Elasticsearch folder](./elasticsearch).
-<br><br>
 
 ## Kibana Deployment
 
@@ -121,7 +121,6 @@ A `ClusterIP` service is configured to expose Kibana within the cluster, making 
 This configuration provides a straightforward Kibana setup for development and testing. For production use, consider expanding to multiple instances and configuring external access as needed. 
 
 For detailed resource configurations, refer to the respective YAML files in the [Kibana folder](./kibana).
-<br><br>
 
 ## Filebeat Deployment
 
@@ -174,3 +173,99 @@ This configuration provides a straightforward Filebeat setup for development and
 
 For detailed resource configurations, refer to the respective YAML files in the [Filebeat folder](./filebeat).
 
+## Hello World Application Deployment
+
+### Overview
+
+The provided configuration is designed for a simple, single-instance Hello World application setup using Nginx, suitable for development, testing, or low-traffic environments. This deployment ensures that the Hello World application is accessible within the Kubernetes cluster and generates logs for testing the logging setup.
+
+### Namespace
+
+The Hello World application is deployed in the `hello-world` namespace, ensuring isolation and better management.
+
+### Deployment Configuration
+
+#### ConfigMap
+
+A ConfigMap is used to store the HTML content that will be served by the Nginx server. This makes it easy to manage and update the web content separately from the application code.
+
+#### Deployment
+
+The Deployment configuration includes:
+- **Single Replica**: One replica is used to keep the setup simple and resource-efficient.
+- **Environment Variables**: Configured to serve the static HTML content from the ConfigMap.
+
+#### Service
+
+A `ClusterIP` service is configured to expose the Hello World application within the cluster, making it accessible to other services and users internally.
+
+### Key Choices and Their Reasons
+
+1. **Single-Instance Configuration**:
+   - **Single Replica**: Chosen for simplicity in a low-traffic, development, or testing environment. This setup avoids the complexity of managing multiple instances, making it easier to set up and manage.
+
+2. **ConfigMap for HTML Content**:
+   - **ConfigMap**: Separates the web content from the application code, making it easy to manage and update.
+
+3. **Service Type**:
+   - **ClusterIP**: Exposes the Hello World application within the cluster, ensuring internal accessibility for other services and applications.
+
+### Liveness and Readiness Probes
+
+1. **Liveness Probe**:
+   - **Path**: `/`
+   - **Purpose**: Ensures the Nginx server is running and restarts the pod if it becomes unresponsive.
+
+2. **Readiness Probe**:
+   - **Path**: `/`
+   - **Purpose**: Ensures the Nginx server is ready to serve traffic before it starts receiving requests.
+
+### Conclusion
+
+This configuration provides a straightforward Hello World application setup for development and testing. For production use, consider scaling appropriately and configuring resources based on actual traffic and performance needs.
+
+For detailed resource configurations, refer to the respective YAML files in the [Hello World folder](./hello-world).
+
+## Miscellaneous Configurations
+
+### Overview
+
+The `misc` folder contains additional Kubernetes configurations that support the overall deployment and management of the Elastic Stack and related applications. These configurations include a namespace for the Elastic Stack components and a utility pod used for generating logs.
+
+### EFK Namespace
+
+A dedicated namespace `efk-stack` is created to host all the Elastic Stack components (Elasticsearch, Filebeat, and Kibana). This ensures isolation, better management, and organization of resources.
+
+### Curl Pod
+
+The `curlpod` is a simple utility pod deployed in the `hello-world` namespace. It is used to generate logs for testing and verifying the logging setup. This pod runs a container with the `appropriate/curl` image and executes a sleep command, allowing manual log generation through `curl` commands.
+
+### Conclusion
+
+These miscellaneous configurations provide essential support for the Elastic Stack deployment and log generation, ensuring a complete and functional setup for development and testing purposes.
+
+For detailed resource configurations, refer to the respective YAML files in the [misc folder](./misc).
+
+## Results
+
+The following images from Kibana illustrate that logs from the deployed applications are being received and processed correctly. These visualizations help verify that the logging setup is functioning as intended.
+
+### Image 1: Random Logs
+
+This image shows a selection of random logs collected by Filebeat, including logs from the Nginx container (which is part of the Hello World application).
+
+![Random Logs](./images/logs.png)
+
+### Image 2: Log Distribution by Namespace
+
+This image displays the distribution of log records grouped by Kubernetes namespace. It demonstrates that the `hello-world` namespace is responsible for almost 60% of the log records.
+
+![Log Distribution by Namespace](./images/logs-by-ns.png)
+
+### Image 3: Log Distribution by Container Name
+
+This image shows the distribution of log records based on the container name. It highlights that the Nginx container (part of the Hello World application) is responsible for nearly 63% of the log records.
+
+![Log Distribution by Container Name](./images/logs-by-container.png)
+
+These visualizations confirm that the logging setup captures and processes logs from all deployed components, providing a comprehensive view of the system's log data.
