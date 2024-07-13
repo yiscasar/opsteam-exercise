@@ -141,6 +141,7 @@ The DaemonSet configuration includes:
 - **Environment Variables**: Configured to connect to the Elasticsearch service within the cluster and to set the node name.
 - **Volume Mounts**: Mounts necessary directories to collect logs from the host.
 - **Liveness Probe**: Ensures Filebeat is running and restarts the pod if it becomes unresponsive.
+- **Readiness Probe**: Ensures Filebeat is ready to send logs to Elasticsearch before receiving traffic.
 
 ### Key Choices and Their Reasons
 
@@ -154,8 +155,12 @@ The DaemonSet configuration includes:
      - **/var/lib/docker/containers**: Mounts the Docker containers directory to access container logs.
 
 2. **Liveness Probe**:
-   - **Path**: `/`
+   - **Command**: `curl --fail 127.0.0.1:5066`
    - **Purpose**: Ensures Filebeat is running and restarts the pod if it becomes unresponsive.
+
+3. **Readiness Probe**:
+   - **Command**: `filebeat test output`
+   - **Purpose**: Ensures Filebeat is ready to send logs to Elasticsearch before receiving traffic.
 
 ### Note for More Important Environments
 
@@ -168,3 +173,4 @@ The DaemonSet configuration includes:
 This configuration provides a straightforward Filebeat setup for development and testing. For production use, consider scaling appropriately and configuring resources based on actual log volume and performance needs.
 
 For detailed resource configurations, refer to the respective YAML files in the [Filebeat folder](./filebeat).
+

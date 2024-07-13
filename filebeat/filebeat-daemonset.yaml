@@ -45,14 +45,30 @@ spec:
           mountPath: /var/lib/docker/containers
           readOnly: true
         livenessProbe:
-          httpGet:
-            path: /
-            port: 5066
-          initialDelaySeconds: 60
-          periodSeconds: 20
-          timeoutSeconds: 5
+          exec:
+            command:
+              - sh
+              - -c
+              - |
+                #!/usr/bin/env bash -e
+                curl --fail 127.0.0.1:5066
           failureThreshold: 3
-          successThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - |
+                #!/usr/bin/env bash -e
+                filebeat test output
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
       volumes:
       - name: config
         configMap:
