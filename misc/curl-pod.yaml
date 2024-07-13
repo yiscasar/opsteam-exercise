@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curlpod
+  namespace: hello-world
+spec:
+  containers:
+  - name: curlcontainer
+    image: appropriate/curl
+    command: ["sleep", "3600"]

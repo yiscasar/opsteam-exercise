@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: hello-world
+  labels:
+    app: nginx
+    component: hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+      component: hello-world
+  template:
+    metadata:
+      labels:
+        app: nginx
+        component: hello-world
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: nginx-html
